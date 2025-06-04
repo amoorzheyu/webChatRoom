@@ -204,3 +204,48 @@ input.addEventListener("keydown", (event) => {
     sendMessage(); // 回车发送消息
   }
 });
+
+
+let isDragging = false; // 标记是否正在拖动
+let offsetX, offsetY; // 记录鼠标相对于容器的偏移量
+
+
+// 获取浏览器窗口的宽高
+const windowWidth = window.innerWidth;
+const windowHeight = window.innerHeight;
+
+// 鼠标按下事件
+chatContainer.addEventListener('mousedown', (e) => {
+  isDragging = true; // 设置拖动状态为 true
+  offsetX = e.clientX - chatContainer.getBoundingClientRect().left; // 获取鼠标相对容器的水平偏移量
+  offsetY = e.clientY - chatContainer.getBoundingClientRect().top; // 获取鼠标相对容器的垂直偏移量
+  chatContainer.style.cursor = 'grabbing'; // 改变鼠标指针样式
+});
+
+// 鼠标移动事件
+document.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    let x = e.clientX - offsetX;
+    let y = e.clientY - offsetY;
+
+    // 限制容器位置，确保不超出浏览器窗口
+    const chatWidth = chatContainer.offsetWidth;
+    const chatHeight = chatContainer.offsetHeight;
+
+    // 确保容器在窗口内水平和垂直居中
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x + chatWidth > windowWidth) x = windowWidth - chatWidth;
+    if (y + chatHeight > windowHeight) y = windowHeight - chatHeight;
+
+    chatContainer.style.position = 'absolute'; // 确保容器是绝对定位的
+    chatContainer.style.left = `${x}px`; // 设置新位置
+    chatContainer.style.top = `${y}px`;
+  }
+});
+
+// 鼠标松开事件
+document.addEventListener('mouseup', () => {
+  isDragging = false; // 停止拖动
+  chatContainer.style.cursor = 'grab'; // 恢复鼠标指针样式
+});
