@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat Room</title>
   <style>
+
+    /* 移动端设置背景 */
+    @media screen and (max-width: 767px) {
+      body {
+        background-image: url("./assets/bg_mobile.png");
+        background-size: cover;
+        background-position: center;
+      }
+    }
+
+    /* pc端设置背景 */
+    @media screen and (min-width: 768px) {
+      body {
+        background-image: url("./assets/bg_pc.png");
+        background-size: cover;
+        background-position: center;
+      }
+    }
+
     /* 基础样式 */
     body {
       font-family: Arial, sans-serif;
