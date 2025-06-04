@@ -17,8 +17,8 @@ let userNickname = null; // 用户昵称
 // 页面加载时，自动填充房间号和昵称
 window.onload = () => {
   userId = localStorage.getItem("userId");
-  localStorage.getItem("currentRoom");
-  localStorage.getItem("nickname") || "Guest"; // 默认昵称为 'Guest'
+  currentRoom = localStorage.getItem("currentRoom");
+  userNickname = localStorage.getItem("nickname") || "Guest"; // 默认昵称为 'Guest'
 
   // 如果没有身份，生成一个新的身份并存储
   if (!userId) {
