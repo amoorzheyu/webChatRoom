@@ -53,6 +53,9 @@ function initializeWebSocket() {
     socket.close(); // 如果现有连接未关闭，先关闭它
   }
 
+  //清空messages
+  messages.innerHTML = '';
+
   socket = new WebSocket("ws://localhost:3000");
 
   // WebSocket 事件处理函数
