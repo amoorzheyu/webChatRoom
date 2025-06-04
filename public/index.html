@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Room</title>
+  <style>
+    /* 基础样式 */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    /* Form container */
+    .form-container {
+      width: 100%;
+      max-width: 400px;
+      background: linear-gradient(#212121, #212121) padding-box,
+                  linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
+      border: 2px solid transparent;
+      padding: 32px 24px;
+      font-size: 14px;
+      font-family: inherit;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-sizing: border-box;
+      border-radius: 16px;
+    }
+
+    .form-container button:active {
+      scale: 0.95;
+    }
+
+    .form-container .form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-container .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .form-container .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #717171;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .form-container .form-group input {
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      background-color: transparent;
+      border: 1px solid #414141;
+    }
+
+    .form-container .form-group input::placeholder {
+      opacity: 0.5;
+    }
+
+    .form-container .form-group input:focus {
+      outline: none;
+      border-color: #e81cff;
+    }
+
+    /* Enter 按钮样式 */
+    #join-button {
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5rem;
+      background: radial-gradient(
+          circle,
+          rgba(46, 213, 116, 0.36) 0%,
+          rgba(0, 0, 0, 0) 95%
+        ),
+        linear-gradient(rgba(46, 213, 116, 0.073) 1px, transparent 1px),
+        linear-gradient(to right, rgba(46, 213, 116, 0.073) 1px, transparent 1px);
+      background-size:
+        cover,
+        15px 15px,
+        15px 15px;
+      background-position:
+        center center,
+        center center,
+        center center;
+      border-image: radial-gradient(
+          circle,
+          rgb(46, 213, 115) 0%,
+          rgba(0, 0, 0, 0) 100%
+        ) 1;
+      border-width: 1px 0 1px 0;
+      color: rgb(46, 213, 115);
+      padding: 1rem 3rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      transition: background-size 0.2s ease-in-out;
+    }
+
+    #join-button:hover {
+      background-size:
+        cover,
+        10px 10px,
+        10px 10px;
+    }
+
+    #join-button:active {
+      filter: hue-rotate(250deg);
+    }
+
+    #join-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* Toolbar */
+    .terminal_toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background: #212121;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    /* 按钮样式 */
+    .butt {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-color {
+      background-color: #ee411a; /* 红色关闭按钮 */
+    }
+
+    .btn-minimize {
+      background-color: #f9e846; /* 黄色最小化按钮 */
+    }
+
+    .btn-maximize {
+      background-color: #48c800; /* 绿色最大化按钮 */
+    }
+
+    /* Hover效果 */
+    .btn:hover {
+      filter: brightness(1.2);
+    }
+
+    /* Chat container */
+    .container {
+      width: 100%;
+      max-width: 450px;
+      height: 400px;
+      background-color: #212121;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Chat body */
+    .terminal_body {
+      background: #1d1d1d;
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+      scrollbar-width: none; /* Hide scrollbar for Firefox */
+    }
+
+    .terminal_body::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+    }
+
+    /* Input field for sending messages */
+    .input-area {
+      display: flex;
+      padding-top: 10px;
+      gap: 10px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    #input {
+      width: 100%;
+      padding: 10px;
+      background: #313131;
+      border: 1px solid #414141;
+      color: white;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    #send-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #send-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Exit button - Positioned at the top right corner */
+    #leave-button {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #leave-button:hover {
+      background-color: #c9302c;
+    }
+
+    /* 用户名和用户内容样式 */
+    .terminal_promt {
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .terminal_user {
+      color: #1eff8e; /* 绿色用户名 */
+      font-weight: bold;
+    }
+
+    .terminal_message {
+      color: #ffffff; /* 白色用户内容 */
+      margin-left: 5px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Initial entering information -->
+  <div id="enter-container" class="form-container">
+    <h2>Enter Room Key and Nickname</h2>
+    <div class="form">
+      <div class="form-group">
+        <label for="room-input">Room Key</label>
+        <input id="room-input" type="text" placeholder="Enter room key" />
+      </div>
+      <div class="form-group">
+        <label for="nickname-input">Nickname</label>
+        <input id="nickname-input" type="text" placeholder="Enter your nickname" />
+      </div>
+      <button id="join-button" disabled>Enter</button>
+    </div>
+  </div>
+
+  <!-- Chat room interface -->
+  <div id="chat-container" class="container" style="display: none;">
+    <div class="terminal_toolbar">
+      <div class="butt">
+        <!-- 红色关闭按钮 -->
+        <button class="btn btn-color"></button>
+        <!-- 黄色最小化按钮 -->
+        <button class="btn btn-minimize"></button>
+        <!-- 绿色最大化按钮 -->
+        <button class="btn btn-maximize"></button>
+      </div>
+      <p class="user">User: ~</p>
+      <div class="add_tab" style="opacity: 0;">+</div>
+    </div>
+    <div class="terminal_body" id="message_body">
+      <!-- <div class="terminal_promt">
+        <span class="terminal_user">User1</span>
+        <span class="terminal_message">Hello, this is a message from User1!</span>
+      </div>
+      <div class="terminal_promt">
+        <span class="terminal_user">User2</span>
+        <span class="terminal_message">Hi, how are you?</span>
+      </div> -->
+    </div>
+    <div class="input-area">
+      <input id="input" type="text" placeholder="Enter message" />
+      <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+    <button id="leave-button" onclick="leaveRoom()" style="display: none;">×</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
