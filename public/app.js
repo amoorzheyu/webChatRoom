@@ -62,7 +62,6 @@ function initializeWebSocket() {
     leaveButton.disabled = false; // 允许退出房间
 
     if (currentRoom && userNickname) {
-        console.log("joinRoom111");
       joinRoom(currentRoom);
     }
   };
@@ -151,11 +150,11 @@ function leaveRoom() {
     content: `${userNickname} has left the room.`,
   });
 
-  console.log("test");
   socket.send(messageToSend);
 
   localStorage.removeItem("currentRoom");
   roomInput.value = ""; // 清空房间输入框
+  currentRoom  = null;
 
   // 切换回初始界面
   chatContainer.style.display = "none";
