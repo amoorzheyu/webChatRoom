@@ -149,7 +149,7 @@ function joinRoom(room) {
 function leaveRoom() {
   const messageToSend = JSON.stringify({
     room: currentRoom,
-    nickname: userNickname, // 确保发送正确的昵称
+    nickname: 'root', // 确保发送正确的昵称
     content: `${userNickname} has left the room.`,
   });
 
