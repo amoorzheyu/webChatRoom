@@ -8,13 +8,18 @@ const joinButton = document.getElementById("join-button");
 const leaveButton = document.getElementById("leave-button");
 const chatContainer = document.getElementById("chat-container");
 const enterContainer = document.getElementById("enter-container");
+const sendButton = document.getElementById("send-button");
 
-let userId = localStorage.getItem("userId");
-let currentRoom = localStorage.getItem("currentRoom");
-let userNickname = localStorage.getItem("nickname") || "Guest"; // 默认昵称为 'Guest'
+let userId = null; // 用户ID
+let currentRoom = null; // 当前房间
+let userNickname = null; // 用户昵称
 
 // 页面加载时，自动填充房间号和昵称
 window.onload = () => {
+  userId = localStorage.getItem("userId");
+  localStorage.getItem("currentRoom");
+  localStorage.getItem("nickname") || "Guest"; // 默认昵称为 'Guest'
+
   // 如果没有身份，生成一个新的身份并存储
   if (!userId) {
     userId = "user-" + Math.floor(Math.random() * 10000);
@@ -32,9 +37,9 @@ window.onload = () => {
   }
 
   // 如果已经有房间号和昵称，自动加入该房间
-  if (currentRoom && userNickname) {
-    joinRoom(currentRoom); // 自动加入房间
-  }
+  // if (currentRoom && userNickname) {
+  initializeWebSocket(); // 初始化WebSocket通过open回调进入聊天室
+  // }
 };
 
 // 检查 WebSocket 是否已连接
@@ -55,6 +60,11 @@ function initializeWebSocket() {
     isSocketOpen = true;
     joinButton.disabled = false; // 允许加入房间
     leaveButton.disabled = false; // 允许退出房间
+
+    if (currentRoom && userNickname) {
+        console.log("joinRoom111");
+      joinRoom(currentRoom);
+    }
   };
 
   socket.onmessage = (event) => {
@@ -100,19 +110,20 @@ function sendMessage() {
     socket.send(messageToSend);
     input.value = ""; // 清空输入框
   } else if (!isWebSocketOpen()) {
-    alert("WebSocket 连接尚未建立，请稍等片刻。");
+    console.log("WebSocket 连接尚未建立，请稍等片刻。");
   } else {
-    alert("请输入有效的房间密钥和消息内容。");
+    console.log("请输入有效的房间密钥和消息内容。");
   }
 }
 
 // 用户加入房间
 function joinRoom(room) {
+  console.log("joinRoom");
   if (isWebSocketOpen()) {
     const messageToSend = JSON.stringify({
       room,
       nickname: userNickname, // 确保发送正确的昵称
-      content: `${userNickname} has joined the room.`,
+      content: `I'm here.`,
     });
     socket.send(messageToSend);
 
@@ -139,6 +150,8 @@ function leaveRoom() {
     nickname: userNickname, // 确保发送正确的昵称
     content: `${userNickname} has left the room.`,
   });
+
+  console.log("test");
   socket.send(messageToSend);
 
   localStorage.removeItem("currentRoom");
@@ -178,8 +191,9 @@ joinButton.addEventListener("click", () => {
 // 退出房间按钮点击事件
 leaveButton.addEventListener("click", leaveRoom);
 
-// 初始化 WebSocket 连接
-initializeWebSocket();
+sendButton.addEventListener("click", sendMessage);
+
+
 
 // 监听回车键发送消息
 input.addEventListener("keydown", (event) => {
